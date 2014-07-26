@@ -18,6 +18,7 @@
 package org.magnum.dataup;
 
 import io.magnum.autograder.HandinUtil;
+import org.magnum.dataup.InternalAutoGradingTest;
 
 import java.io.File;
 import java.net.HttpURLConnection;
