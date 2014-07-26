@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 apply plugin: 'war'
 apply plugin: 'jetty'
 
-stopPort = 8081 
+stopPort = 8888
 stopKey = 'stopKey'
 
 repositories {
@@ -14,4 +14,11 @@ dependencies {
 	providedCompile 'javax.servlet:servlet-api:2.5'
 	providedCompile 'org.apache.commons:commons-io:1.3.2'
 	testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+task jettyTest(type: Test) << {
+	jettyRun.daemon = true
+	jettyRun.execute()
+	test.execute()
+	jettyStop.execute()
 }
