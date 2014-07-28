@@ -17,12 +17,9 @@
  */
 package org.magnum.dataup;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -39,6 +36,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -102,7 +100,8 @@ public class AFilledController {
 	@RequestMapping(value = VideoSvcApi.VIDEO_DATA_PATH, method = RequestMethod.POST)
 	public @ResponseBody VideoStatus setVideoData(
 			@PathVariable(VideoSvcApi.ID_PARAMETER) long id, 
-			@RequestBody MultipartFile data) throws IOException{
+			@RequestParam(value = VideoSvcApi.DATA_PARAMETER) MultipartFile data
+			) throws IOException{
 		Video v = mVideos.get(id);
 		mVideoDataMgr.saveVideoData(v, data.getInputStream());
 		return new VideoStatus(VideoStatus.VideoState.READY);
