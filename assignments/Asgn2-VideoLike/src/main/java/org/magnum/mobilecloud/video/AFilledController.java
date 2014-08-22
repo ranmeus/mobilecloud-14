@@ -18,8 +18,6 @@
 
 package org.magnum.mobilecloud.video;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
@@ -36,20 +34,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import sun.awt.RepaintArea;
 
 import com.google.common.collect.Lists;
 
 @Controller
 public class AFilledController {
 	
-	public static final String VIDEO_LIKE_PATH = "/video/{id}/like";
-	public static final String VIDEO_UNLIKE_PATH = "/video/{id}/unlike";
-	public static final String VIDEO_LIKEDBY_PATH = "/video/{id}/likedby";
-	public static final String VIDEO_ID = "id";
+	private static final String VIDEO_ID_PATH = VideoSvcApi.VIDEO_SVC_PATH + "/{id}";
+	private static final String VIDEO_LIKE_PATH = VIDEO_ID_PATH + "/like";
+	private static final String VIDEO_UNLIKE_PATH = VIDEO_ID_PATH + "/unlike";
+	private static final String VIDEO_LIKEDBY_PATH = VIDEO_ID_PATH + "/likedby";
+	private static final String VIDEO_ID = "id";
 	// The VideoRepository that we are going to store our videos
 	// in. We don't explicitly construct a VideoRepository, but
 	// instead mark this object as a dependency that needs to be
@@ -73,7 +69,7 @@ public class AFilledController {
 		 return videos.save(v);
 	}
 	
-	@RequestMapping(value=VideoSvcApi.VIDEO_SVC_PATH + "/{id}", method=RequestMethod.GET)
+	@RequestMapping(value=VIDEO_ID_PATH, method=RequestMethod.GET)
 	public @ResponseBody Video getVideo(@PathVariable long id){
 		return videos.findOne(id);
 	}

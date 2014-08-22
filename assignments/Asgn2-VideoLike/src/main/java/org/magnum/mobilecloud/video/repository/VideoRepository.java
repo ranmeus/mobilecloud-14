@@ -6,9 +6,7 @@ import org.magnum.mobilecloud.video.client.VideoSvcApi;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 /**
  * An interface for a repository that can store Video
@@ -44,9 +42,6 @@ public interface VideoRepository extends CrudRepository<Video, Long>{
 			// parameter it should use to fill in the "duration" variable used to
 			// search for Videos
 			@Param(VideoSvcApi.DURATION_PARAMETER) long maxduration);
-	
-	//@RequestMapping()
-	//public Video findById(@PathVariable("id") long id);
 	
 	/*
 	 * See: http://docs.spring.io/spring-data/jpa/docs/1.3.0.RELEASE/reference/html/jpa.repositories.html 

@@ -96,7 +96,7 @@ public class ResourcesMapper extends ObjectMapper {
 			// that we care about (e.g., the list of Video objects)
 			Object content = value.getContent();
 			// Instead of all of the Resources member variables, etc.
-			// Just mashall the actual content (Videos) into the JSON
+			// Just marshall the actual content (Videos) into the JSON
 			JsonSerializer<Object> s = provider.findValueSerializer(
 					content.getClass(), null);
 			s.serialize(content, jgen, provider);
