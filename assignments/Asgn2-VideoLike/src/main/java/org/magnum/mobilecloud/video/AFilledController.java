@@ -18,6 +18,8 @@
 
 package org.magnum.mobilecloud.video;
 
+import org.magnum.mobilecloud.video.repository.VideoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,22 +28,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class AFilledController {
 	
-	/**
-	 * You will need to create one or more Spring controllers to fulfill the
-	 * requirements of the assignment. If you use this file, please rename it
-	 * to something other than "AnEmptyController"
-	 * 
-	 * 
-		 ________  ________  ________  ________          ___       ___  ___  ________  ___  __       
-		|\   ____\|\   __  \|\   __  \|\   ___ \        |\  \     |\  \|\  \|\   ____\|\  \|\  \     
-		\ \  \___|\ \  \|\  \ \  \|\  \ \  \_|\ \       \ \  \    \ \  \\\  \ \  \___|\ \  \/  /|_   
-		 \ \  \  __\ \  \\\  \ \  \\\  \ \  \ \\ \       \ \  \    \ \  \\\  \ \  \    \ \   ___  \  
-		  \ \  \|\  \ \  \\\  \ \  \\\  \ \  \_\\ \       \ \  \____\ \  \\\  \ \  \____\ \  \\ \  \ 
-		   \ \_______\ \_______\ \_______\ \_______\       \ \_______\ \_______\ \_______\ \__\\ \__\
-		    \|_______|\|_______|\|_______|\|_______|        \|_______|\|_______|\|_______|\|__| \|__|
-                                                                                                                                                                                                                                                                        
-	 * 
-	 */
+	// The VideoRepository that we are going to store our videos
+	// in. We don't explicitly construct a VideoRepository, but
+	// instead mark this object as a dependency that needs to be
+	// injected by Spring. Our Application class has a method
+	// annotated with @Bean that determines what object will end
+	// up being injected into this member variable.
+	//
+	// Also notice that we don't even need a setter for Spring to
+	// do the injection.
+	//
+	@Autowired
+	private VideoRepository videos;
 	
 	@RequestMapping(value="/go",method=RequestMethod.GET)
 	public @ResponseBody String goodLuck(){
