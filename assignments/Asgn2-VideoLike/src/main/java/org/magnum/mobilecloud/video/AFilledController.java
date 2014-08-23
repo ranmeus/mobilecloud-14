@@ -20,7 +20,6 @@ package org.magnum.mobilecloud.video;
 
 import java.security.Principal;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
@@ -40,9 +39,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.common.collect.Lists;
 
 @Controller
+@RequestMapping(value=VideoSvcApi.VIDEO_SVC_PATH)
 public class AFilledController {
 	
-	private static final String VIDEO_ID_PATH = VideoSvcApi.VIDEO_SVC_PATH + "/{id}";
+	private static final String VIDEO_ID_PATH = "/{id}";
 	private static final String VIDEO_LIKE_PATH = VIDEO_ID_PATH + "/like";
 	private static final String VIDEO_UNLIKE_PATH = VIDEO_ID_PATH + "/unlike";
 	private static final String VIDEO_LIKEDBY_PATH = VIDEO_ID_PATH + "/likedby";
@@ -60,12 +60,12 @@ public class AFilledController {
 	@Autowired
 	private VideoRepository videos;
 	
-	@RequestMapping(value=VideoSvcApi.VIDEO_SVC_PATH, method=RequestMethod.GET)
+	@RequestMapping(method=RequestMethod.GET)
 	public @ResponseBody Collection<Video> getVideoList(){
 		return Lists.newArrayList(videos.findAll());
 	}
 	
-	@RequestMapping(value=VideoSvcApi.VIDEO_SVC_PATH, method=RequestMethod.POST)
+	@RequestMapping(method=RequestMethod.POST)
 	public @ResponseBody Video addVideo(@RequestBody Video v){
 		 return videos.save(v);
 	}
@@ -102,8 +102,7 @@ public class AFilledController {
 		if (v==null){
 			code = HttpServletResponse.SC_NOT_FOUND;
 		} else {
-			boolean isSet = isLike ? v.addLikedUser(user) : v.removeLikedUser(user);
-			if (isSet){
+			if (isLike ? v.addLikedUser(user) : v.removeLikedUser(user)){
 				videos.save(v);
 			} else {
 				code = HttpServletResponse.SC_BAD_REQUEST;

@@ -28,17 +28,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.magnum.dataup.model.Video;
 import org.magnum.dataup.model.VideoStatus;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.ClassUtils;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,9 +63,11 @@ public class AFilledController {
 	private Map<Long,Video> mVideos = new HashMap<Long, Video>();
 	private static final AtomicLong currentId = new AtomicLong(0L);
 	
-	public AFilledController() throws IOException {
+	public AFilledController() {
 		super();
-		mVideoDataMgr = VideoFileManager.get();
+		try {
+			mVideoDataMgr = VideoFileManager.get();
+		} catch (IOException e) {}
 	}
 	
 	@RequestMapping(value = VideoSvcApi.VIDEO_SVC_PATH, method = RequestMethod.GET)
@@ -100,10 +98,9 @@ public class AFilledController {
 	@RequestMapping(value = VideoSvcApi.VIDEO_DATA_PATH, method = RequestMethod.POST)
 	public @ResponseBody VideoStatus setVideoData(
 			@PathVariable(VideoSvcApi.ID_PARAMETER) long id, 
-			@RequestParam(value = VideoSvcApi.DATA_PARAMETER) MultipartFile data
-			) throws IOException{
-		Video v = mVideos.get(id);
-		mVideoDataMgr.saveVideoData(v, data.getInputStream());
+			@RequestParam(value = VideoSvcApi.DATA_PARAMETER) MultipartFile data,
+			HttpServletResponse res) {
+		accessData(id, data, res, true);
 		return new VideoStatus(VideoStatus.VideoState.READY);
 	}
 	
@@ -116,23 +113,16 @@ public class AFilledController {
 	@RequestMapping(value = VideoSvcApi.VIDEO_DATA_PATH, method = RequestMethod.GET)
 	public void getData(
 			@PathVariable(VideoSvcApi.ID_PARAMETER) long id, 
-			HttpServletResponse hsr
-			) throws IOException{
-		Video v = mVideos.get(id);
-		mVideoDataMgr.copyVideoData(v, hsr.getOutputStream());
+			HttpServletResponse hsr) {
+		accessData(id, null, hsr, false);
 	}
-	
+
 	/**
 	 * This method catch all Exceptions of RequestMapping methods and set 404 response code,
 	 * which is not always true.
 	 * @param ex is caught
 	 * @return exception name
 	 */
-	@ExceptionHandler(Throwable.class)
-	@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "id not exists")
-	public String handleAnyException(Throwable ex) {
-		return ClassUtils.getShortName(ex.getClass());
-	}
 
 // private methods
 
@@ -161,4 +151,18 @@ public class AFilledController {
             entity.setId(currentId.incrementAndGet());
         }
     }
+    
+	private void accessData(long id, MultipartFile data, HttpServletResponse res, boolean isSet) {
+		try {
+			Video v = mVideos.get(id);
+			if (v == null)
+				throw new IOException();
+			if (isSet)
+				mVideoDataMgr.saveVideoData(v, data.getInputStream());
+			else
+				mVideoDataMgr.copyVideoData(v, res.getOutputStream());
+		} catch (IOException e) {
+			res.setStatus(404);
+		}
+	}
 }
