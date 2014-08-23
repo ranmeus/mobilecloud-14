@@ -1,6 +1,7 @@
 package org.magnum.mobilecloud.video.repository;
 
-import java.util.List;
+import java.util.Set;
+
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -36,7 +37,7 @@ public class Video {
 	private long likes;
 	
 	@ElementCollection
-	private List<String> likedUsers;
+	private Set<String> likedUsers;
 	
 	public Video() {
 	}
@@ -81,11 +82,11 @@ public class Video {
 		this.id = id;
 	}
 
-	public List<String> getLikedUsers() {
+	public Set<String> getLikedUsers() {
 		return likedUsers;
 	}
 
-	public void setLikedUsers(List<String> likedUsers) {
+	public void setLikedUsers(Set<String> likedUsers) {
 		this.likedUsers = likedUsers;
 	}
 
@@ -99,18 +100,20 @@ public class Video {
 	
 	// Helper functions
 	
-	public boolean isLiked(String user){
-		return likedUsers.contains(user);
+	public boolean addLikedUser(String user){
+		if (likedUsers.add(user)){
+			likes++;
+			return true;
+		}
+		return false;
 	}
 	
-	public void addLikedUser(String user){
-		likedUsers.add(user);
-		likes++;
-	}
-	
-	public void removeLikedUser(String user){
-		likedUsers.remove(user);
-		likes--;
+	public boolean removeLikedUser(String user){
+		if (likedUsers.remove(user)){
+			likes--;
+			return true;
+		}
+		return false;
 	}
 	
 	/**

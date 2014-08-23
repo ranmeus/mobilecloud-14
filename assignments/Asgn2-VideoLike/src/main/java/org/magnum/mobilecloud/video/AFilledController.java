@@ -21,6 +21,7 @@ package org.magnum.mobilecloud.video;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -85,7 +86,7 @@ public class AFilledController {
 	}
 	
 	@RequestMapping(value=VIDEO_LIKEDBY_PATH, method=RequestMethod.GET)
-	public @ResponseBody List<String> likedbyVideo(@PathVariable(VIDEO_ID) long id) {
+	public @ResponseBody Set<String> likedbyVideo(@PathVariable(VIDEO_ID) long id) {
 		Video v = videos.findOne(id);
 		if (v == null){
 			throw new ResourceNotFoundException();
@@ -101,14 +102,11 @@ public class AFilledController {
 		if (v==null){
 			code = HttpServletResponse.SC_NOT_FOUND;
 		} else {
-			if (isLike == v.isLiked(user)){
-				code = HttpServletResponse.SC_BAD_REQUEST;
-			} else {
-				if (isLike)
-					v.addLikedUser(user);
-				else
-					v.removeLikedUser(user);
+			boolean isSet = isLike ? v.addLikedUser(user) : v.removeLikedUser(user);
+			if (isSet){
 				videos.save(v);
+			} else {
+				code = HttpServletResponse.SC_BAD_REQUEST;
 			}
 		}
 		res.setStatus(code);
